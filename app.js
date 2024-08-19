@@ -1,3 +1,4 @@
+require('dotenv').config();
 const path = require("path");
 
 const express = require("express");
@@ -11,13 +12,11 @@ const multer = require("multer");
 
 const errorController = require("./controllers/error");
 const User = require("./models/user");
-
-const MONGODB_URI =
-  "mongodb+srv://akanmu:johnson123@nodeexpressprojects.dcrga9n.mongodb.net/shop?retryWrites=true&w=majority";
+const port = process.env.PORT || 4200;
 
 const app = express();
 const store = new MongoDBStore({
-  uri: MONGODB_URI,
+  uri: process.env.MONGO_URI,
   collection: "sessions",
 });
 const csrfProtection = csrf();
@@ -110,11 +109,10 @@ app.use((error, req, res, next) => {
   });
 });
 
-mongoose
-  .connect(MONGODB_URI)
-  .then((result) => {
-    app.listen(3000);
-  })
-  .catch((err) => {
-    console.log(err);
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('Connected to Database!'));
+
+
+  app.listen(port, () => {
+    console.log(`Server connected to http://localhost:${port}`);
   });
